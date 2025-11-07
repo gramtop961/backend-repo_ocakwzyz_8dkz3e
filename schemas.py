@@ -11,7 +11,7 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, constr
 from typing import Optional
 
 # Example schemas (replace with your own):
@@ -41,8 +41,14 @@ class Product(BaseModel):
 # Add your own schemas here:
 # --------------------------------------------------
 
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class Note(BaseModel):
+    """
+    Public notes people want to leave behind.
+    Collection name: "note"
+    """
+    text: constr(min_length=1, max_length=1000) = Field(
+        ..., description="The note content"
+    )
+    author: Optional[constr(strip_whitespace=True, max_length=80)] = Field(
+        None, description="Optional name or alias"
+    )
